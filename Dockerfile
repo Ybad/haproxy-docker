@@ -1,9 +1,6 @@
-FROM ubuntu:14.04
+FROM ubuntu
 MAINTAINER Johannes 'fish' Ziemke <fish@freigeist.org> @discordianfish
 
-RUN apt-get -qy update && apt-get -qy install software-properties-common
-RUN add-apt-repository ppa:nginx/development
-RUN add-apt-repository ppa:vbernat/haproxy-1.5
 RUN apt-get -qy update && apt-get -qy install nginx haproxy ucarp openssl
 
 ADD . /haproxy
