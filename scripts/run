@@ -36,22 +36,11 @@ then
   exit 1
 fi
 
-# Generate keys if not provided
-[ -f nginx.d/dhparam.pem ] ||
-      openssl dhparam -out nginx.d/dhparam.pem 2048
-[ -f nginx.d/server-key.pem ] ||
-      openssl genrsa -out nginx.d/server-key.pem 2048
-[ -f nginx.d/server-csr.pem ] ||
-      openssl req -new -key nginx.d/server-key.pem -out nginx.d/server-csr.pem -subj /CN=*/
-[ -f nginx.d/server-cert.pem ] ||
-      openssl x509 -req -in nginx.d/server-csr.pem -out nginx.d/server-cert.pem -signkey nginx.d/server-key.pem -days 3650
 
 # Check is haproxy.cfg is valid before we start ucarp
 haproxy -c -f /haproxy/haproxy.cfg
-nginx -t -c /haproxy/nginx.conf
 
-( /usr/sbin/nginx   -c /haproxy/nginx.conf;  shutdown 1 ) &
-( /usr/sbin/haproxy -f /haproxy/haproxy.cfg; shutdown 2 ) &
+/usr/sbin/haproxy -f /haproxy/haproxy.cfg; shutdown 2
 
 /haproxy/scripts/ucarp &
 echo $! > $PIDFILE
